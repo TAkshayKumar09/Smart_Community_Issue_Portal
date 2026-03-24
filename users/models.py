@@ -13,9 +13,3 @@ class User(models.Model):
 
     # def __str__(self):
     #     return self.email
-
-from users.models import User
-
-user = User.objects.get(email="akshay@gmail.com")
-user.is_admin = True
-user.save()

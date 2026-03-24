@@ -51,3 +51,22 @@ def delete_issue(req, id):
             except Issue.DoesNotExist:
                 return JsonResponse({"error": "Issue not found"}, status=404)
     return JsonResponse({"error": "Issue not found"}, status=404)
+
+# update issue
+@csrf_exempt
+def update_status(req):
+    if req.method == "POST":
+        issue_id = req.POST.get("id")
+        status = req.POST.get("status")
+
+        try:
+            issue = Issue.objects.get(id=issue_id)
+            issue.status=status
+            issue.save()
+
+            return JsonResponse({"message": "Status updated"})
+
+        except Issue.DoesNotExist:
+            return JsonResponse({"error": "Issue not found"}, status=404)
+
+    return JsonResponse({"error": "Invalid request"}, status=400)

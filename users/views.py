@@ -3,6 +3,10 @@ from django.http import HttpResponse,JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import User
 import bcrypt
+import jwt
+import datetime
+from django.conf import settings
+SECRET_KEY=settings.SECRET_KEY
 
 # Create your views here.
 
@@ -31,13 +35,34 @@ def login(req):
 
             is_same = bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8'))
             if is_same:
-                return HttpResponse("Login Successfully", status = 200)
+                # creating jwt
+                payload ={
+                    "user_id": check.id,
+                    "is_admin": check.is_admin,
+                    "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2)
+                }
+
+                # create token
+                token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+                # response
+                response = JsonResponse({"message": "Login successful","admin": check.is_admin})
+
+                # set cookie
+                response.set_cookie(
+                    key="token",
+                    value=token,
+                    httponly=True,
+                    secure=True,
+                    samesite="none"
+                )
+
+                return response
             else:
-                return HttpResponse("Invalid credentials", status = 400)
+                return JsonResponse({"error": "Invalid credentials"}, status=400)
         
         except User.DoesNotExist:
-            return HttpResponse("User not found", status = 404)
-    return HttpResponse("Invalid Request Method", status=405)
+            return JsonResponse({"error": "User not found"}, status=404)
+    return JsonResponse({"error": "Invalid Request Method"}, status=405)
 
 @csrf_exempt
 def get_profile(req, email):

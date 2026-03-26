@@ -67,7 +67,7 @@ def login(req):
                     value=token,
                     httponly=True,
                     secure=True,
-                    samesite="none"
+                    samesite="None"
                 )
 
                 return response

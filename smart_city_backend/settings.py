@@ -63,7 +63,9 @@ MIDDLEWARE = [
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOWED_ORIGINS = [
-    "https://your-frontend-url.onrender.com"
+    "https://your-frontend-url.onrender.com",
+    "http://localhost:5173",
+
 ]
 
 ROOT_URLCONF = 'smart_city_backend.urls'

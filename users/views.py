@@ -19,6 +19,16 @@ def register(req):
         email = req.POST.get('email')
         password = req.POST.get('password')
 
+        # VALIDATIONS
+        if not name or not phone or not email or not password:
+            return JsonResponse({"error": "All fields are required"}, status=400)
+
+        if len(password) < 8:
+            return JsonResponse({"error": "Password too short"}, status=400)
+
+        if User.objects.filter(email=email).exists():
+            return JsonResponse({"error": "Email already exists"}, status=400)
+
         hashed = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt(rounds=12)).decode('utf-8')
     Users = User.objects.create(name=name, phone=phone, email=email, password=hashed)
     return HttpResponse('User created successfully')
@@ -28,6 +38,10 @@ def login(req):
     if req.method == "POST":
         email = req.POST.get('email')
         password = req.POST.get('password')
+
+         # VALIDATIONS
+        if not email or not password:
+            return JsonResponse({"error": "Email and password required"}, status=400)
 
         try:
             check = User.objects.get(email=email)

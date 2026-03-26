@@ -59,7 +59,7 @@ def login(req):
                 # create token
                 token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
                 # response
-                response = JsonResponse({"message": "Login successful","is_admin": check.is_admin})
+                response = JsonResponse({"message": "Login successful","user": {"name": check.name,"email": check.email,"is_admin": check.is_admin}})
 
                 # set cookie
                 response.set_cookie(

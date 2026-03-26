@@ -23,7 +23,7 @@ def register(req):
         if not name or not phone or not email or not password:
             return JsonResponse({"error": "All fields are required"}, status=400)
 
-        if len(password) < 8:
+        if len(password) < 6:
             return JsonResponse({"error": "Password too short"}, status=400)
 
         if User.objects.filter(email=email).exists():

@@ -19,6 +19,13 @@ def register(req):
         email = req.POST.get('email')
         password = req.POST.get('password')
 
+        # CHECK IF USER EXISTS
+        if User.objects.filter(email=email).exists():
+            return JsonResponse(
+                {"error": "User already exists. Please login."},
+                status=400
+            )
+
         # VALIDATIONS
         if not name or not phone or not email or not password:
             return JsonResponse({"error": "All fields are required"}, status=400)

@@ -79,22 +79,82 @@ def login(req):
     return JsonResponse({"error": "Invalid Request Method"}, status=405)
 
 @csrf_exempt
-def get_profile(req, email):
-    if req.method == "GET":
+def get_user(req):
+    token = req.COOKIES.get("token")
+
+    if not token:
+        return JsonResponse({"error": "Not logged in"}, status=401)
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user = User.objects.get(id=payload["user_id"])
+
+        return JsonResponse({
+            "name": user.name,
+            "email": user.email,
+            "phone": user.phone
+        })
+    except:
+        return JsonResponse({"error": "Invalid token"}, status=401)
+
+
+@csrf_exempt
+def update_user(req):
+    if req.method == "POST":
+        token = req.COOKIES.get("token")
+
+        if not token:
+            return JsonResponse({"error": "Not logged in"}, status=401)
 
         try:
-            user = User.objects.get(email=email)
+            # Decode token
+            payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            user = User.objects.get(id=payload["user_id"])
 
-            return JsonResponse({
-                "name": user.name,
-                "email": user.email,
-                "phone": user.phone,
-            })
+            # Get data
+            name = req.POST.get("name")
+            email = req.POST.get("email")
+            phone = req.POST.get("phone")
+            old_password = req.POST.get("old_password")
+            new_password = req.POST.get("new_password")
+
+            # Update basic details
+            if name:
+                user.name = name
+            if email:
+                user.email = email
+            if phone:
+                user.phone = phone
+
+            # Password change (optional)
+            if old_password and new_password:
+                import bcrypt
+
+                is_match = bcrypt.checkpw(
+                    old_password.encode("utf-8"),
+                    user.password.encode("utf-8")
+                )
+
+                if not is_match:
+                    return JsonResponse({"error": "Old password incorrect"}, status=400)
+
+                # hash new password
+                hashed = bcrypt.hashpw(new_password.encode("utf-8"), bcrypt.gensalt())
+                user.password = hashed.decode("utf-8")
+
+            # Save changes
+            user.save()
+
+            return JsonResponse({"message": "Profile updated successfully"})
+
+        except jwt.ExpiredSignatureError:
+            return JsonResponse({"error": "Token expired"}, status=401)
+
         except User.DoesNotExist:
-            return JsonResponse("User not found", status=404)
-    return JsonResponse("Invalid request", status=400)
-            
+            return JsonResponse({"error": "User not found"}, status=404)
 
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
 
-            
+    return JsonResponse({"error": "Invalid request"}, status=400)       
 

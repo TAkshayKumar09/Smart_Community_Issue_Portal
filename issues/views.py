@@ -5,12 +5,15 @@ import cloudinary.uploader
 from .models import Issue
 from users.models import User
 import jwt
+from django.conf import settings
+SECRET_KEY=settings.SECRET_KEY
 # Create your views here.
 
 @csrf_exempt
 def create_issue(req):
     if req.method == "POST":
             try:
+                # token check
                 token = req.COOKIES.get("token")
                 if not token:
                     return JsonResponse({"error": "Not logged in"}, status=401)
@@ -45,7 +48,7 @@ def create_issue(req):
 def get_all_issues(req):
     issues = Issue.objects.all().values()
     list_issues = list(issues)
-    
+
     return JsonResponse(list_issues, safe=False)
 
 # delete issue

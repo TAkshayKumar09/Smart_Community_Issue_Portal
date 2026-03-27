@@ -11,5 +11,5 @@ class Issue(models.Model):
     location = models.CharField(max_length=200)
     description = models.TextField()
     image = models.URLField(null=True)
-    status = models.CharField(max_length=50, default="pending")
+    status = models.CharField(max_length=50, default="Pending")
     created_at = models.DateTimeField(auto_now_add=True)

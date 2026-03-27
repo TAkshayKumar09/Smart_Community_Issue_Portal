@@ -87,19 +87,23 @@ def update_status(req):
 
 @csrf_exempt
 def myIssues(req):
-    email = req.GET.get('email')
+    try:
+        # 🔐 get user from token
+        token = request.COOKIES.get("token")
+        if not token:
+            return JsonResponse({"error": "Not logged in"}, status=401)
 
-    if not email:
-        return JsonResponse({"error": "Email is required"}, status=400)
-    issues = Issue.objects.filter(email = email)
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user = User.objects.get(id=payload["user_id"])
 
-    data = list(issues.values('id',
-        'title',
-        'description',
-        'status',
-        'category',
-        'location',
-        'image'
-    ))
+        # 🎯 get user issues
+        issues = Issue.objects.filter(user=user).values()
 
-    return JsonResponse(data, safe=False)
+        return JsonResponse(list(issues), safe=False)
+
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)
+
+    except Exception as e:
+        print("ERROR:", str(e))  # 🔥 check logs
+        return JsonResponse({"error": str(e)}, status=500)

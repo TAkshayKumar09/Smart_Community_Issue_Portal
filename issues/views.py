@@ -89,7 +89,7 @@ def update_status(req):
 def myIssues(req):
     try:
         # 🔐 get user from token
-        token = request.COOKIES.get("token")
+        token = req.COOKIES.get("token")
         if not token:
             return JsonResponse({"error": "Not logged in"}, status=401)
 

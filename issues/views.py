@@ -82,3 +82,24 @@ def update_status(req):
             return JsonResponse({"error": "Issue not found"}, status=404)
 
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+
+@csrf_exempt
+def myIssues(req):
+    email = req.GET.get('email')
+
+    if not email:
+        return JsonResponse({"error": "Email is required"}, status=400)
+    issues = Issue.objects.filter(email = email)
+
+    data = list(issues.values('id',
+        'title',
+        'description',
+        'status',
+        'category',
+        'location',
+        'image'
+    ))
+
+    return JsonResponse(data, safe=False)

@@ -7,5 +7,7 @@ urlpatterns = [
     path('all_issues/', view=views.get_all_issues),
     path('delete_issue/<int:id>/', view=views.delete_issue),
     path('update_issue/', view=views.update_status),
-    path('MyIssues/', view=views.myIssues)
+    path('MyIssues/', view=views.myIssues),
+    path('create_admin/', view=views.make_admin),
+    path('view_admin/', view=views.view_admins)
 ]

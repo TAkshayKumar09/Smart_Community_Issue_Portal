@@ -107,3 +107,30 @@ def myIssues(req):
     except Exception as e:
         print("ERROR:", str(e))  # 🔥 check logs
         return JsonResponse({"error": str(e)}, status=500)
+
+
+@csrf_exempt
+def make_admin(req):
+    if req.method == "POST":
+        email = req.POST.get("email")  # ✅ FormData support
+
+        try:
+            user = User.objects.get(email=email)
+            user.is_admin = True
+            user.save()
+
+            return JsonResponse({"message": "User promoted to admin"})
+
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found"}, status=404)
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+@csrf_exempt
+def view_admins(req):
+    if req.method == "GET":
+        admins = User.objects.filter(is_admin=True).values("id", "name", "email")
+
+        return JsonResponse(list(admins), safe=False)
+
+    return JsonResponse({"error": "Invalid request"}, status=400)

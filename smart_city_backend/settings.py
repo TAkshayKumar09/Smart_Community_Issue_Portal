@@ -68,7 +68,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "https://your-frontend-url.onrender.com",
     "http://localhost:5173",
-    "https://smart-community-issue-portal.vercel.app/",
+    "https://smart-community-issue-portal.vercel.app",
 ]
 
 
@@ -82,7 +82,7 @@ CORS_ALLOW_METHODS = list(default_methods)
 CSRF_TRUSTED_ORIGINS = [
     "https://your-frontend-url.onrender.com",
     "http://localhost:5173",
-    "https://smart-community-issue-portal.vercel.app/",
+    "https://smart-community-issue-portal.vercel.app",
 ]
 
 # REQUIRED FOR COOKIES (VERY IMPORTANT)

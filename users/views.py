@@ -82,7 +82,7 @@ def login(req):
                 return JsonResponse({"error": "Invalid credentials"}, status=400)
         
         except User.DoesNotExist:
-            return JsonResponse({"error": "User not found"}, status=404)
+            return JsonResponse({"error": "Invalid credentials"}, status=400)
     return JsonResponse({"error": "Invalid Request Method"}, status=405)
 
 @csrf_exempt

@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+from corsheaders.defaults import default_headers
+from corsheaders.defaults import default_methods
+
 from pathlib import Path
 
 import environ
@@ -65,8 +68,26 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "https://your-frontend-url.onrender.com",
     "http://localhost:5173",
-
+    "https://smart-community-issue-portal.vercel.app/",
 ]
+
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "authorization",
+]
+
+
+CORS_ALLOW_METHODS = list(default_methods)
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://your-frontend-url.onrender.com",
+    "http://localhost:5173",
+    "https://smart-community-issue-portal.vercel.app",
+]
+
+
+
+
 
 ROOT_URLCONF = 'smart_city_backend.urls'
 

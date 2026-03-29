@@ -85,7 +85,9 @@ CSRF_TRUSTED_ORIGINS = [
     "https://smart-community-issue-portal.vercel.app",
 ]
 
-
+# REQUIRED FOR COOKIES (VERY IMPORTANT)
+CSRF_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SAMESITE = "None"
 
 
 

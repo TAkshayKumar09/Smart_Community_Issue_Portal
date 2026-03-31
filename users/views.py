@@ -60,7 +60,7 @@ def login(req):
                 payload ={
                     "user_id": check.id,
                     "is_admin": check.is_admin,
-                    "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
+                    "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2)
                 }
 
                 # create token

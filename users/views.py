@@ -101,7 +101,10 @@ def get_user(req):
             "email": user.email,
             "phone": user.phone
         })
-    except:
+    except jwt.ExpiredSignatureError:
+        return JsonResponse({"error": "Token expired"}, status=401)
+
+    except jwt.InvalidTokenError:
         return JsonResponse({"error": "Invalid token"}, status=401)
 
 

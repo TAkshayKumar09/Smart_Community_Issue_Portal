@@ -88,7 +88,7 @@ def update_status(req):
 @csrf_exempt
 def myIssues(req):
     try:
-        # 🔐 get user from token
+        # get user from token
         token = req.COOKIES.get("token")
         if not token:
             return JsonResponse({"error": "Not logged in"}, status=401)
@@ -96,7 +96,7 @@ def myIssues(req):
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user = User.objects.get(id=payload["user_id"])
 
-        # 🎯 get user issues
+        # get user issues
         issues = Issue.objects.filter(user=user).values()
 
         return JsonResponse(list(issues), safe=False)
